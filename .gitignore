@@ -1,0 +1,9 @@
+.classpath
+.project
+**/*.iml
+**/*.txt
+**/*.yml
+
+.settings/
+target/
+.idea/
