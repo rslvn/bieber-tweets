@@ -95,8 +95,8 @@ public class TwitterService {
 		String pin = null;
 		Scanner scanner = new Scanner(System.in);
 		try {
-			logger.info("Go to the following link in your browser: {}", requestToken.getAuthorizationURL());
-			logger.info("Please enter the retrieved PIN:");
+			logger.info("\nGo to the following link in your browser:\n{}\n", requestToken.getAuthorizationURL());
+			logger.info("\nPlease enter the retrieved PIN:");
 			pin = scanner.next();
 		} finally {
 			scanner.close();

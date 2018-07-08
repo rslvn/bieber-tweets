@@ -6,10 +6,12 @@ package org.interview;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 
+import org.interview.model.Message;
 import org.interview.repository.MessageRepository;
 import org.interview.twitter.TwitterService;
 import org.interview.twitter.TwitterStreamer;
@@ -23,6 +25,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.env.Environment;
 import org.springframework.scheduling.concurrent.CustomizableThreadFactory;
+
+import com.google.gson.GsonBuilder;
 
 /**
  * Application main
@@ -68,15 +72,23 @@ public class Application implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
+		// authorize by a user, get pin and receive accesstoken
 		twitterService.setAccessToken();
-		twitterStreamer.startStreaming();
 
-		String output = messageRepository.getPrintableText();
+		// streaming
+		long elapsedTime = twitterStreamer.startStreaming();
 
-		Files.write(Paths.get("./output.txt"), output.getBytes(), StandardOpenOption.CREATE);
+		// prepare sorted message list
+		List<Message> messageList = messageRepository.getSortedMessageList();
 
-		LOG.info("{}", output);
+		// prepare a JSON formatted output data and write it in a file.
+		String output = new GsonBuilder().setPrettyPrinting().create().toJson(messageList);
+		Files.write(Paths.get("./output/result.json"), output.getBytes(), StandardOpenOption.CREATE);
 
+		// write unformatted JSON to log
+		LOG.info("{}", new GsonBuilder().create().toJson(messageList));
+		LOG.info("Finished! elapsedTime: {}, received message count:{}", elapsedTime, messageList.size());
+		// don't exit in dev profile
 		boolean isDevProfile = environment.acceptsProfiles("dev");
 		if (!isDevProfile) {
 			System.exit(0);

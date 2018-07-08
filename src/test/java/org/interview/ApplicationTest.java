@@ -3,6 +3,8 @@
  */
 package org.interview;
 
+import java.io.File;
+
 import org.interview.repository.MessageRepository;
 import org.interview.twitter.TwitterService;
 import org.interview.twitter.TwitterStreamer;
@@ -48,6 +50,7 @@ public class ApplicationTest {
 	@Test
 	public void contextLoads() throws Exception {
 		Assert.notNull(messageRepository, "messageRepository not inialized");
+		Assert.isTrue(new File("./output/result.json").exists(), "output file does not exist");
 	}
 
 }

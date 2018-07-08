@@ -176,6 +176,7 @@ public class TwitterStreamerTest {
 		ExecutorService executor = Executors.newFixedThreadPool(1);
 		executor.execute(() -> {
 			try {
+			    // wait while streamer preparing
 				TimeUnit.MILLISECONDS.sleep(10);
 			} catch (InterruptedException e) {
 				e.printStackTrace();

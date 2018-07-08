@@ -72,7 +72,7 @@ public class TwitterStreamer {
 	 * 
 	 * @throws InterruptedException
 	 */
-	public void startStreaming() throws InterruptedException {
+	public long startStreaming() throws InterruptedException {
 		createCountDownLatch();
 		AtomicInteger counter = new AtomicInteger(0);
 		StatusListener statusListener = getStatusListener(latch, counter);
@@ -84,8 +84,8 @@ public class TwitterStreamer {
 		sw.start();
 
 		twitterStream.filter(trackFilterQuery);
-		LOG.info("Tracking tweets is started");
 
+		// wait maximum maxStreamingDuration seconds
 		boolean stopped = latch.await(maxStreamingDuration, TimeUnit.SECONDS);
 		sw.stop();
 
@@ -93,6 +93,8 @@ public class TwitterStreamer {
 
 		LOG.info("twitterStream destroyed:{} elapsed time: {}, tweet count: {}", stopped, sw.getTotalTimeMillis(),
 				counter.get());
+
+		return sw.getTotalTimeMillis();
 	}
 
 	/**
@@ -101,9 +103,9 @@ public class TwitterStreamer {
 	 * @return
 	 */
 	public void createCountDownLatch() {
-	    if(latch!= null){
-	        return;
-        }
+		if (latch != null) {
+			return;
+		}
 		latch = new CountDownLatch(maxMessageCount);
 	}
 
@@ -141,17 +143,20 @@ public class TwitterStreamer {
 	 * @return a Status listener instance
 	 */
 	public StatusListener getStatusListener(CountDownLatch latch, AtomicInteger counter) {
-	    if(listener!=null){
-           return listener;
-        }
+		if (listener != null) {
+			return listener;
+		}
 
 		return new StatusListener() {
 
 			public void onStatus(Status status) {
 				LOG.info("StatusListener onStatus");
 				latch.countDown();
-				counter.incrementAndGet();
-				executor.execute(new TweetStatusTask(messageRepository, status));
+
+				// maybe stream not stopped yet
+				if (counter.incrementAndGet() <= maxMessageCount) {
+					executor.execute(new TweetStatusTask(messageRepository, status));
+				}
 			}
 
 			@Override

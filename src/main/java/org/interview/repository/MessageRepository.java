@@ -16,8 +16,6 @@ import org.interview.model.Message;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
-import com.google.gson.GsonBuilder;
-
 /**
  * This class is responsible for keep messages whose are received from streaming
  * process. And also preparing output are doing here.
@@ -69,7 +67,7 @@ public class MessageRepository {
 
 		// sort Authors by CreationDate
 		List<Author> authorIdSortedList = new ArrayList<>(tempMap.keySet());
-        authorIdSortedList.sort((o1, o2) -> o1.getCreationDate().compareTo(o2.getCreationDate()));
+		authorIdSortedList.sort((o1, o2) -> o1.getCreationDate().compareTo(o2.getCreationDate()));
 
 		for (Author author : authorIdSortedList) {
 			// sort the messages of the author by CreationDate of the message
@@ -77,15 +75,6 @@ public class MessageRepository {
 		}
 
 		return messageList;
-	}
-
-	/**
-	 * returns JSON formatted and sorted message list
-	 * 
-	 * @return final format of output
-	 */
-	public String getPrintableText() {
-		return new GsonBuilder().setPrettyPrinting().create().toJson(getSortedMessageList());
 	}
 
 	/**

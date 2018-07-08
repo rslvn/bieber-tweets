@@ -93,8 +93,6 @@ public class MessageRepositoryTest {
 		assertEquals(errorMessageSize, 3, messageList.size());
 		assertEquals(errorMessageNotSame, message3, messageList.get(0));
 		assertEquals(errorMessageNotSame, message1, messageList.get(2));
-
-		assertNotNull("Empty printable text", messageRepository.getPrintableText());
 	}
 
 	/**
