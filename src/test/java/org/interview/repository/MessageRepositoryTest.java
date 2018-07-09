@@ -85,11 +85,15 @@ public class MessageRepositoryTest {
 		messageRepository.add(message3);
 		assertEquals(errorMessageSize, 2, messageRepository.getMessageMap().size());
 
+		// messages exist validation
 		validate(author1, message1);
 		validate(author2, message2, message3);
 
+		// received sorted messages
 		List<Message> messageList = messageRepository.getSortedMessageList();
 		assertNotNull("messageList can not be null", messageList);
+
+		// validate user and message chronologically, ascending order
 		assertEquals(errorMessageSize, 3, messageList.size());
 		assertEquals(errorMessageNotSame, message3, messageList.get(0));
 		assertEquals(errorMessageNotSame, message1, messageList.get(2));

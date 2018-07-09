@@ -1,72 +1,134 @@
-# Build and Execute
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+
+- [bieber-tweets](#bieber-tweets)
+  - [Build and Execute](#build-and-execute)
+  - [Output](#output)
+  - [Proof in Test Codes](#proof-in-test-codes)
+  - [Folder Structure](#folder-structure)
+  - [Sample success log](#sample-success-log)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
+# bieber-tweets
+The application is created for the requirements in [TASK_DESCRIPTION.md](./TASK_DESCRIPTION.md)
+
+The application tracks tweets on the text "bieber" by using Twitter API. The streaming process is depends on streaming duration and streamed message count. Which of them is exceed, then the streaming process is stopped.
+
+The application is a `spring-boot` application. It uses `twitter4j` for Twitter API processes.
+
+## Build and Execute
+The command is executes compiling code, executing unit tests, creating docker image and run a docker container.
 ```
 ./docker/run.sh
  
 ```
 
+## Output
+Output is a file that is located at ./output/result.json. The data that is JSON-formatted message array, is in the file.
+Just give the file, It is easy to parse and process by a machine.
 
+To see the results run following commands
+```
+cat ./output/result.json
+```
 
+## Proof in Test Codes
 
-
-> *************************************************************
-> *                                                           *
-> *       ________  __    __  ________    ____       ______   *
-> *      /_/_/_/_/ /_/   /_/ /_/_/_/_/  _/_/_/_   __/_/_/_/   *
-> *     /_/_____  /_/___/_/    /_/    /_/___/_/  /_/          *
-> *    /_/_/_/_/   /_/_/_/    /_/    /_/_/_/_/  /_/           *
-> *   ______/_/       /_/    /_/    /_/   /_/  /_/____        *
-> *  /_/_/_/_/       /_/    /_/    /_/   /_/    /_/_/_/ . io  *
-> *                                                           *
-> *************************************************************
-
-# Sytac Java Exercise #
-
-This development test is used as part of Sytac selection for Java developers. You are requested to develop a simple application that covers all the requirements listed below. To have an indication of the criteria that will be used to judge your submission, all the following are considered as metrics of good development:
-
-+ Correctness of the implementation
-+ Decent test coverage
-+ Code cleanliness
-+ Efficiency of the solution
-+ Careful choice of tools and data formats
-+ Use of production-ready approaches
-
-While no specific time limit is mandated to complete the exercise, you will be asked to provide your code within a given deadline from Sytac HR. You are free to choose any library as long as it can run on the JVM.
-
-## Task ##
-
-We would like you to write code that will cover the functionality explained below and provide us with the source, instructions to build and run the appliocation  as well as a sample output of an execution:
-
-+ Connect to the [Twitter Streaming API](https://dev.twitter.com/streaming/overview)
-    * Use the following values:
-        + Consumer Key: `RLSrphihyR4G2UxvA0XBkLAdl`
-        + Consumer Secret: `FTz2KcP1y3pcLw0XXMX5Jy3GTobqUweITIFy4QefullmpPnKm4`
-    * The app name will be `java-exercise`
-    * You will need to login with Twitter
 + Filter messages that track on "bieber"
+> `find proof at TwitterStreamerTest.testStartStreaming()`
+
 + Retrieve the incoming messages for 30 seconds or up to 100 messages, whichever comes first
+> `find proof at TwitterStreamerTest.testStartStreamingMaxStreamingDuration() and TwitterStreamerTest.testStartStreamingMaxCount()`
+
 + Your application should return the messages grouped by user (users sorted chronologically, ascending)
+> `find proof at MessageRepositoryTest.testAddGroupByAuthor()`
+
 + The messages per user should also be sorted chronologically, ascending
-+ For each message, we will need the following:
-    * The message ID
-    * The creation date of the message as epoch value
-    * The text of the message
-    * The author of the message
-+ For each author, we will need the following:
-    * The user ID
-    * The creation date of the user as epoch value
-    * The name of the user
-    * The screen name of the user
+> `find proof at MessageRepositoryTest.testAddGroupByAuthor()`
+
 + All the above infomation is provided in either SDTOUT or a log file
-+ You are free to choose the output format, provided that it makes it easy to parse and process by a machine
+> `All received and sorted messages stored in ./output/result.json file as JSON`
 
-### __Bonus points for:__ ###
+## Folder Structure
 
-+ Keep track of messages per second statistics across multiple runs of the application
-+ The application can run as a Docker container
+```
+├── docker
+│   ├── Dockerfile
+│   └── run.sh
+├── output
+├── pom.xml
+├── README.md
+├── src
+│   ├── main
+│   │   ├── java
+│   │   │   └── org
+│   │   │       └── interview
+│   │   │           ├── AppConstant.java
+│   │   │           ├── Application.java
+│   │   │           ├── model
+│   │   │           │   ├── Author.java
+│   │   │           │   └── Message.java
+│   │   │           ├── repository
+│   │   │           │   └── MessageRepository.java
+│   │   │           └── twitter
+│   │   │               ├── TweetStatusTask.java
+│   │   │               ├── TwitterService.java
+│   │   │               └── TwitterStreamer.java
+│   │   └── resources
+│   │       └── application.properties
+│   └── test
+│       ├── java
+│       │   └── org
+│       │       └── interview
+│       │           ├── AppConstantTest.java
+│       │           ├── ApplicationTest.java
+│       │           ├── model
+│       │           │   └── ModelTest.java
+│       │           ├── repository
+│       │           │   └── MessageRepositoryTest.java
+│       │           ├── TestConstants.java
+│       │           ├── TestUtils.java
+│       │           └── twitter
+│       │               ├── TwitterServiceTest.java
+│       │               ├── TwitterStatusTaskTest.java
+│       │               └── TwitterStreamerTest.java
+│       └── resources
+```
 
-## Provided functionality ##
+## Sample success log
+```
+2018-07-09 15:33:29.087  INFO 1 --- [           main] org.interview.Application                : Started Application in 0.95 seconds (JVM running for 3.909)
+2018-07-09 15:33:30.036  INFO 1 --- [           main] org.interview.twitter.TwitterService     : 
+Go to the following link in your browser:
+https://api.twitter.com/oauth/authorize?oauth_token=lwY4iwAAAAAAt7ElAAABZH-tILY
 
-The present project in itself is a [Maven project](http://maven.apache.org/) that contains one class that provides you with a `com.google.api.client.http.HttpRequestFactory` that is authorised to execute calls to the Twitter API in the scope of a specific user.
-You will need to provide your _Consumer Key_ and _Consumer Secret_ and follow through the OAuth process (get temporary token, retrieve access URL, authorise application, enter PIN for authenticated token).
-With the resulting factory you are able to generate and execute all necessary requests.
-If you want to, you can also disregard the provided classes or Maven configuration and create your own application from scratch.
+2018-07-09 15:33:30.036  INFO 1 --- [           main] org.interview.twitter.TwitterService     : 
+Please enter the retrieved PIN:
+2493830
+2018-07-09 15:33:56.405  INFO 1 --- [           main] org.interview.twitter.TwitterService     : Received Token key: 1191148813-YHpwYbzAayYfeoZQ3jiYxu0kuwZjsYwIl2DaeAv secret: 2nJnoas8JGpTCGCav428813t9M5hodajsPeuU6xPR5fcq
+2018-07-09 15:33:56.442  INFO 1 --- [][initializing]] twitter4j.TwitterStreamImpl              : Establishing connection.
+2018-07-09 15:33:57.895  INFO 1 --- [ing connection]] twitter4j.TwitterStreamImpl              : Connection established.
+2018-07-09 15:33:57.896  INFO 1 --- [ing connection]] twitter4j.TwitterStreamImpl              : Receiving status stream.
+2018-07-09 15:33:58.106  INFO 1 --- [c Dispatcher[0]] org.interview.twitter.TwitterStreamer    : StatusListener onStatus
+2018-07-09 15:33:58.109  INFO 1 --- [c Dispatcher[0]] org.interview.twitter.TwitterStreamer    : StatusListener onStatus
+2018-07-09 15:33:58.110  INFO 1 --- [c Dispatcher[0]] org.interview.twitter.TwitterStreamer    : StatusListener onStatus
+.
+.
+.
+.
+
+2018-07-09 15:34:19.903  INFO 1 --- [c Dispatcher[0]] org.interview.twitter.TwitterStreamer    : StatusListener onStatus
+2018-07-09 15:34:19.906  INFO 1 --- [c Dispatcher[0]] org.interview.twitter.TwitterStreamer    : StatusListener onStatus
+2018-07-09 15:34:19.907  INFO 1 --- [c Dispatcher[0]] org.interview.twitter.TwitterStreamer    : StatusListener onStatus
+2018-07-09 15:34:19.908  INFO 1 --- [           main] org.interview.twitter.TwitterStreamer    : Wait for destroying twitterStream
+2018-07-09 15:34:20.062  INFO 1 --- [           main] org.interview.twitter.TwitterStreamer    : twitterStream destroyed:true elapsed time: 23478, tweet count: 100
+2018-07-09 15:34:20.129  INFO 1 --- [           main] org.interview.twitter.TwitterStreamer    : FINISHED! elapsedTime: 23478, received message count:100. Run the following command to see the received messages
+2018-07-09 15:34:20.129  INFO 1 --- [           main] org.interview.twitter.TwitterStreamer    : 
+Run: cat ./output/result.json
+
+2018-07-09 15:34:20.140  INFO 1 --- [       Thread-2] s.c.a.AnnotationConfigApplicationContext : Closing org.springframework.context.annotation.AnnotationConfigApplicationContext@277d4bef: startup date [Mon Jul 09 15:33:28 UTC 2018]; root of context hierarchy
+2018-07-09 15:34:20.150  INFO 1 --- [       Thread-2] o.s.j.e.a.AnnotationMBeanExporter        : Unregistering JMX-exposed beans on shutdown
+
+```

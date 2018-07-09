@@ -88,7 +88,8 @@ public class Application implements CommandLineRunner {
 		LOG.info(
 				"FINISHED! elapsedTime: {}, received message count:{}. Run the following command to see the received messages",
 				elapsedTime, messageList.size());
-		LOG.info("\ncat {}\n", AppConstant.OUTPUT_FILE_NAME);
+		LOG.info("\nRun: cat {}\n", AppConstant.OUTPUT_FILE_NAME);
+
 		// don't exit in dev profile
 		boolean isDevProfile = environment.acceptsProfiles("dev");
 		if (!isDevProfile) {
