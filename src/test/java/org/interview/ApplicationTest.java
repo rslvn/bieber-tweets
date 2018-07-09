@@ -50,7 +50,7 @@ public class ApplicationTest {
 	@Test
 	public void contextLoads() throws Exception {
 		Assert.notNull(messageRepository, "messageRepository not inialized");
-		Assert.isTrue(new File("./output/result.json").exists(), "output file does not exist");
+		Assert.isTrue(new File(AppConstant.OUTPUT_FILE_NAME).exists(), "output file does not exist");
 	}
 
 }

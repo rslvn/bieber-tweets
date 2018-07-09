@@ -18,7 +18,7 @@ import org.springframework.util.Assert;
 
 /**
  * This class is responsible for keep messages whose are received from streaming
- * process. And also preparing output are doing here.
+ * process. And also preparing output is doing here.
  * 
  * @author resulav
  *

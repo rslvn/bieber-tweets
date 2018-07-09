@@ -68,7 +68,9 @@ public class TwitterStreamer {
 	}
 
 	/**
-	 * starts streaming for given track value
+	 * starts streaming for given track value, maxMessageCount and maxStreamingDuration
+	 * 
+	 * @return elapsed time for streaming
 	 * 
 	 * @throws InterruptedException
 	 */

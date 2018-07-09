@@ -68,11 +68,17 @@ public class TwitterStreamerTest {
 		twitterStreamer.startStreaming();
 	}
 
+	/**
+	 * test for stop If streaming duration reaches maxStreamingDuration
+	 * 
+	 * @throws Exception
+	 */
 	@Test
 	public void testStartStreamingMaxStreamingDuration() throws Exception {
+		int maxStreamingDuration = 1;
 		CountDownLatch latch = new CountDownLatch(5);
 		ReflectionTestUtils.setField(twitterStreamer, "maxMessageCount", 5);
-		ReflectionTestUtils.setField(twitterStreamer, "maxStreamingDuration", 1);
+		ReflectionTestUtils.setField(twitterStreamer, "maxStreamingDuration", maxStreamingDuration);
 		ReflectionTestUtils.setField(twitterStreamer, "latch", latch);
 
 		Mockito.when(twitterService.createTwitterStream(Mockito.any(StatusListener.class))).thenReturn(twitterStream);
@@ -83,18 +89,24 @@ public class TwitterStreamerTest {
 		twitterStreamer.startStreaming();
 		sw.stop();
 
-		Assert.assertTrue("Elapsed time is smaller", sw.getTotalTimeMillis() > 1000);
-		Assert.assertTrue("Elapsed time is greater", sw.getTotalTimeMillis() < 1050);
+		Assert.assertTrue("Elapsed time is smaller", sw.getTotalTimeMillis() > maxStreamingDuration * 1000);
+		Assert.assertTrue("Elapsed time is greater", sw.getTotalTimeMillis() < maxStreamingDuration * 1000 + 10);
 	}
 
+	/**
+	 * test for stop If message count reaches maxMessageCount
+	 * 
+	 * @throws Exception
+	 */
 	@Test
 	public void testStartStreamingMaxCount() throws Exception {
-		CountDownLatch latch = new CountDownLatch(5);
+		int maxMessageCount = 5;
+		CountDownLatch latch = new CountDownLatch(maxMessageCount);
 		AtomicInteger counter = new AtomicInteger(0);
 		// create and set real Status listener
 		StatusListener listener = twitterStreamer.getStatusListener(latch, counter);
 
-		ReflectionTestUtils.setField(twitterStreamer, "maxMessageCount", 5);
+		ReflectionTestUtils.setField(twitterStreamer, "maxMessageCount", maxMessageCount);
 		ReflectionTestUtils.setField(twitterStreamer, "maxStreamingDuration", 1);
 		ReflectionTestUtils.setField(twitterStreamer, "latch", latch);
 		ReflectionTestUtils.setField(twitterStreamer, "listener", listener);
@@ -105,7 +117,7 @@ public class TwitterStreamerTest {
 		StopWatch sw = new StopWatch();
 		sw.start();
 
-		startDummyStreamer(listener, 5);
+		startDummyStreamer(listener, maxMessageCount);
 
 		// no exception means passed
 		twitterStreamer.startStreaming();
@@ -114,6 +126,11 @@ public class TwitterStreamerTest {
 		Assert.assertTrue("Elapsed time is smaller", sw.getTotalTimeMillis() < 1000);
 	}
 
+	/**
+	 * test for TwitterStreamer service init
+	 * 
+	 * @throws Exception
+	 */
 	@Test
 	public void testInit() throws Exception {
 		ReflectionTestUtils.setField(twitterStreamer, "messageTrack", "bieber");
@@ -123,6 +140,11 @@ public class TwitterStreamerTest {
 		twitterStreamer.init();
 	}
 
+	/**
+	 * test for empty messageTrack value
+	 * 
+	 * @throws Exception
+	 */
 	@Test(expected = IllegalArgumentException.class)
 	public void testInitEmptyMessageTrack() throws Exception {
 		ReflectionTestUtils.setField(twitterStreamer, "messageTrack", "");
@@ -130,12 +152,22 @@ public class TwitterStreamerTest {
 		twitterStreamer.init();
 	}
 
+	/**
+	 * test for null messageTrack value
+	 * 
+	 * @throws Exception
+	 */
 	@Test(expected = IllegalArgumentException.class)
 	public void testInitNullMessageTrack() throws Exception {
 		// no exception means passed
 		twitterStreamer.init();
 	}
 
+	/**
+	 * test for invalid maxMessageCount value
+	 * 
+	 * @throws Exception
+	 */
 	@Test(expected = IllegalStateException.class)
 	public void testInitInvalidMessageCount() throws Exception {
 		ReflectionTestUtils.setField(twitterStreamer, "messageTrack", "bieber");
@@ -144,6 +176,11 @@ public class TwitterStreamerTest {
 		twitterStreamer.init();
 	}
 
+	/**
+	 * test for invalid maxStreamDuration value
+	 * 
+	 * @throws Exception
+	 */
 	@Test(expected = IllegalStateException.class)
 	public void testInitInvalidMaxStreaminDuration() throws Exception {
 		ReflectionTestUtils.setField(twitterStreamer, "messageTrack", "bieber");
@@ -176,7 +213,7 @@ public class TwitterStreamerTest {
 		ExecutorService executor = Executors.newFixedThreadPool(1);
 		executor.execute(() -> {
 			try {
-			    // wait while streamer preparing
+				// wait while streamer preparing
 				TimeUnit.MILLISECONDS.sleep(10);
 			} catch (InterruptedException e) {
 				e.printStackTrace();

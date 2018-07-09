@@ -83,11 +83,12 @@ public class Application implements CommandLineRunner {
 
 		// prepare a JSON formatted output data and write it in a file.
 		String output = new GsonBuilder().setPrettyPrinting().create().toJson(messageList);
-		Files.write(Paths.get("./output/result.json"), output.getBytes(), StandardOpenOption.CREATE);
+		Files.write(Paths.get(AppConstant.OUTPUT_FILE_NAME), output.getBytes(), StandardOpenOption.CREATE);
 
-		// write unformatted JSON to log
-		LOG.info("{}", new GsonBuilder().create().toJson(messageList));
-		LOG.info("Finished! elapsedTime: {}, received message count:{}", elapsedTime, messageList.size());
+		LOG.info(
+				"FINISHED! elapsedTime: {}, received message count:{}. Run the following command to see the received messages",
+				elapsedTime, messageList.size());
+		LOG.info("\ncat {}\n", AppConstant.OUTPUT_FILE_NAME);
 		// don't exit in dev profile
 		boolean isDevProfile = environment.acceptsProfiles("dev");
 		if (!isDevProfile) {
