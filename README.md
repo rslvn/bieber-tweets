@@ -19,7 +19,7 @@ The application tracks tweets on the text "bieber" by using Twitter API. The str
 The application is a `spring-boot` application. It uses `twitter4j` for Twitter API processes.
 
 ## Build and Execute
-The command is executes compiling code, executing unit tests, creating docker image and run a docker container.
+The command triggers compiling code, executing unit tests, creating docker image and run a docker container.
 ```
 ./docker/run.sh
  
