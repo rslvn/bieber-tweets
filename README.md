@@ -5,7 +5,9 @@
 - [bieber-tweets](#bieber-tweets)
   - [Build and Execute](#build-and-execute)
   - [Output](#output)
-  - [Proof in Test Codes](#proof-in-test-codes)
+  - [Test](#test)
+    - [Test coverage](#test-coverage)
+    - [Proof in Test Codes](#proof-in-test-codes)
   - [Folder Structure](#folder-structure)
   - [Sample success log](#sample-success-log)
 
@@ -34,8 +36,12 @@ To see the results run following commands
 cat ./output/result.json
 ```
 
-## Proof in Test Codes
+## Test
 
+### Test coverage
+`%96 154/160`
+
+### Proof in Test Codes
 + Filter messages that track on "bieber"
 > `find proof at TwitterStreamerTest.testStartStreaming()`
 
