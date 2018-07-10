@@ -40,13 +40,6 @@ public class Application implements CommandLineRunner {
 
 	private static final Logger LOG = LoggerFactory.getLogger(TwitterStreamer.class);
 
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		SpringApplication.run(Application.class, args);
-	}
-
 	@Autowired
 	private TwitterService twitterService;
 
@@ -58,6 +51,13 @@ public class Application implements CommandLineRunner {
 
 	@Autowired
 	private Environment environment;
+
+	/**
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		SpringApplication.run(Application.class, args);
+	}
 
 	/**
 	 * Executor bean for processing streamed messages
